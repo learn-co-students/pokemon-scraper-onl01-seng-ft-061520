@@ -11,14 +11,22 @@ class Pokemon
 
 
 
-  def self.save(name, type, db)
-    db.execute("INSERT INTO pokemon (name, type) VALUES (?, ?)", name, type)
+  def self.save(name, type, db) 
+    sql = <<-SQL
+      INSERT INTO pokemon (name, type) 
+      VALUES (?, ?)
+    SQL
+    db.execute(sql, name, type)
   end
-
+  
 
   def self.find(id_num, db)
-    pokemon_info = db.execute("SELECT * FROM pokemon WHERE id=?", id_num).flatten
-    Pokemon.new(id: pokemon_info[0], name: pokemon_info[1], type: pokemon_info[2], ldb: db)
+    sql = "SELECT * FROM pokemon WHERE id=?"
+    result = db.execute(sql, id_num).flatten
+    Pokemon.new(id: result[0], name: result[1], type: result[2], db: db)
   end 
 
 end
+
+# .find
+#finds a pokemon from the database by their id number and returns a new Pokemon object
